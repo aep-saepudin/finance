@@ -117,6 +117,9 @@ async function renderTransaction() {
         `
         container.appendChild(row);
     });
+    updateChart(chart);
+    renderTotalAmount();
+
 }
 
 // Handle delete row
@@ -125,7 +128,6 @@ function deleteRow(id) {
         .then(() => {
             alert('Transaction Deleted')
             renderTransaction();
-            updateChart(chart);
         })
 }
 
@@ -181,7 +183,6 @@ async function renderTotalAmount() {
     // await deleteAllDocuments();
 
     window.chart = renderChart();
-    updateChart(chart);
 
     const response = await db.createIndex({
         index: { fields: ['type', 'name'] }
@@ -189,7 +190,6 @@ async function renderTotalAmount() {
 
     renderCategory();
     renderTransaction();
-    renderTotalAmount();
 
     // handle create category
     const categorySubmit = document.getElementById('category-submit');
@@ -224,7 +224,6 @@ async function renderTotalAmount() {
             .then(() => {
                 alert('Transaction Created')
                 renderTransaction();
-                updateChart(chart);
             })
     });
     
