@@ -125,6 +125,7 @@ function deleteRow(id) {
         .then(() => {
             alert('Transaction Deleted')
             renderTransaction();
+            updateChart(chart);
         })
 }
 
@@ -151,8 +152,29 @@ function renderChart() {
     return chart
 }
 
+async function updateChart(chart) {  
+    let list_category = await listType({ type: 'category' })      
+    list_category = list_category.map((category) => category.name)
+    const list_transaction = await listType({ type: 'transaction' })
+    chart.data.labels = list_category
+    
+    const result = _(list_transaction)
+        .groupBy('category')  // Group by 'category'
+        .mapValues(transactions => 
+            _.sumBy(transactions, transaction => parseFloat(transaction.amount))  // Sum the amounts in each category
+        )
+        .value();
+
+    const matchedResults = list_category.map(category => result[category] || 0); 
+    chart.data.datasets[0].data = matchedResults
+    chart.update();
+} 
+
 (async () => {
     // await deleteAllDocuments();
+
+    window.chart = renderChart();
+    updateChart(chart);
 
     const response = await db.createIndex({
         index: { fields: ['type', 'name'] }
@@ -194,23 +216,11 @@ function renderChart() {
             .then(() => {
                 alert('Transaction Created')
                 renderTransaction();
+                updateChart(chart);
             })
     });
     
-    let list_category = await listType({ type: 'category' })
-    list_category = list_category.map((category) => category.name)
-    const list_transaction = await listType({ type: 'transaction' })
-    const chart = renderChart();
-    chart.data.labels = list_category
-    const result = _(list_transaction)
-        .groupBy('category')  // Group by 'category'
-        .mapValues(transactions => 
-            _.sumBy(transactions, transaction => parseFloat(transaction.amount))  // Sum the amounts in each category
-        )
-        .value();
 
-    const matchedResults = list_category.map(category => result[category] || 0); 
-    chart.data.datasets[0].data = matchedResults
 })()
 
 
