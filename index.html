@@ -5,14 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
 </head>
 <body>
-    hai
     <div class="chart-container">
         <canvas id="myChart"></canvas>
     </div>
+
+    <div class="transaction-container mt-5 container flex-row">
+        <input class="form-control mt-2" type="text"  id="transaction-name-input" placeholder="Name of Transaction">
+        <input  class="form-control mt-2" type="nukber"  id="transaction-amount-input" placeholder="Amount">
+        <select name="category" id="category-list" class="form-select mt-2">
+        </select>
+        <button class ="btn btn-primary mt-2" id="transaction-submit">Submit</button>
+    </div>
+
+    <div class="list-container container mt-5 border">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Category</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-list">
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+
+    <div class="category-container container mt-5">
+        <input  class="form-control mt-2" type="text" id="category-name-input" placeholder="Category Name">
+        <button class ="btn btn-primary mt-2" id="category-submit">Add Category</button>
+        <button class ="btn btn-danger mt-2" id="category-delete-submit">Delete Category</button>
+    </div>
+
+    <div class="tool-container container mt-5">
+        <button class ="btn btn-danger mt-2" id="delete-all-submit">Delete All</button>
+    </div>
+
     <script src="./lib/pouchdb.min.js"></script>
+    <script src="./lib/pouchdb.find.min.js"></script>
     <script src="./lib/chart.umd.min.js"></script>
-    <script src="index.js"></script>
+    <script src="./lib/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="./lib/lodash.min.js"></script>
+    <script src="./index.js"></script>
 </body>
 </html>
