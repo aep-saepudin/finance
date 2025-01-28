@@ -181,7 +181,7 @@ async function renderTotalAmount() {
     // await deleteAllDocuments();
 
     window.chart = renderChart();
-    // updateChart(chart);
+    updateChart(chart);
 
     const response = await db.createIndex({
         index: { fields: ['type', 'name'] }
