@@ -170,11 +170,18 @@ async function updateChart(chart) {
     chart.update();
 } 
 
+async function renderTotalAmount() {
+    const totalAmount = document.getElementById('total-amount-label');
+    const list_transaction = await listType({ type: 'transaction' })
+    const total = _.sumBy(list_transaction, transaction => parseFloat(transaction.amount))
+    totalAmount.innerText = Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total) // format total
+}
+
 (async () => {
     // await deleteAllDocuments();
 
     window.chart = renderChart();
-    updateChart(chart);
+    // updateChart(chart);
 
     const response = await db.createIndex({
         index: { fields: ['type', 'name'] }
@@ -182,6 +189,7 @@ async function updateChart(chart) {
 
     renderCategory();
     renderTransaction();
+    renderTotalAmount();
 
     // handle create category
     const categorySubmit = document.getElementById('category-submit');

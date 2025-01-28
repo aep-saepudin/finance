@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="chart-container">
+    <div class="chart-container container d-flex justify-content-center">
         <canvas id="myChart"></canvas>
     </div>
-
+    <div class="container text-center mt-5">
+      <h1 id="total-amount-label"> Halo </h1>
+    </div>
     <div class="transaction-container mt-5 container flex-row">
         <input class="form-control mt-2" type="text"  id="transaction-name-input" placeholder="Name of Transaction">
         <input  class="form-control mt-2" type="nukber"  id="transaction-amount-input" placeholder="Amount">
