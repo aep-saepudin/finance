@@ -5,3 +5,7 @@
     max-height: 400px;
     margin: 0 auto;
 }
+
+.table>:not(caption)>*>* {
+    color: inherit !important;
+}

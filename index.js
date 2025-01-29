@@ -6,13 +6,18 @@ function showAll() {
     });
 }
 
-function createTransaction({ name, amount, category }) {
+function createTransaction({ name, amount, category, type }) {
+    if (type === 'expense' && amount > 0) {
+        amount = amount * -1;
+    }
+
     const transaction = {
         _id: uniqID(),
         name: name,
         type: 'transaction',
         amount: amount,
-        date: new Date(),
+        type_finance: type,
+        date: new Date().toISOString(),
         category: category
     };
     return db.put(transaction, function callback(err, result) {
@@ -20,6 +25,32 @@ function createTransaction({ name, amount, category }) {
             console.log('Successfully posted a todo!');
         }
     });
+}
+
+function updateTransaction({ name, amount, category, type, id }) {
+
+    if (type === 'expense' && amount > 0) {
+        amount = amount * -1;
+    }
+
+    return db.get(id)
+        .then(function (doc) {
+            // Modify the document with new values
+            doc.name = name;
+            doc.amount = amount;
+            doc.category = category;
+            doc.type_finance = type;
+            doc.date = new Date().toISOString();  // Update the date field
+
+            // Put the updated document back into the database
+            return db.put(doc);
+        })
+        .then(function (result) {
+            console.log('Transaction updated successfully', result);
+        })
+        .catch(function (err) {
+            console.error('Error updating transaction:', err);
+        });
 }
 
 function createCategory({ name }) {
@@ -109,11 +140,15 @@ async function renderTransaction() {
     container.innerHTML = '';
     list.forEach((transaction) => {
         const row = document.createElement('tr');
+        const class_value = transaction.amount < 0 ? 'text-danger' : 'text-success'
+        row.classList.add(class_value);
         row.innerHTML = `
             <th scope="row">${transaction._id} <button onclick="deleteRow('${transaction._id}')"> Delete </button></th>
             <td>${transaction.name}</td>
             <td>${transaction.amount}</td>
             <td>${transaction.category}</td>
+            <td>${transaction.type_finance}</td>
+            <td>${transaction.date}</td>
         `
         container.appendChild(row);
     });
@@ -154,23 +189,24 @@ function renderChart() {
     return chart
 }
 
-async function updateChart(chart) {  
-    let list_category = await listType({ type: 'category' })      
+async function updateChart(chart) {
+    let list_category = await listType({ type: 'category' })
     list_category = list_category.map((category) => category.name)
-    const list_transaction = await listType({ type: 'transaction' })
     chart.data.labels = list_category
-    
+
+    let list_transaction = await listType({ type: 'transaction' })
+    list_transaction = list_transaction.filter((transaction) => transaction.amount < 0)
     const result = _(list_transaction)
         .groupBy('category')  // Group by 'category'
-        .mapValues(transactions => 
+        .mapValues(transactions =>
             _.sumBy(transactions, transaction => parseFloat(transaction.amount))  // Sum the amounts in each category
         )
         .value();
 
-    const matchedResults = list_category.map(category => result[category] || 0); 
+    const matchedResults = list_category.map(category => result[category] || 0);
     chart.data.datasets[0].data = matchedResults
     chart.update();
-} 
+}
 
 async function renderTotalAmount() {
     const totalAmount = document.getElementById('total-amount-label');
@@ -219,14 +255,30 @@ async function renderTotalAmount() {
     transactionSubmit.addEventListener('click', () => {
         const name = document.getElementById('transaction-name-input').value;
         const amount = document.getElementById('transaction-amount-input').value;
+        const type = document.getElementById('type_finance-input').value;
         const category = document.getElementById('category-list').value;
-        createTransaction({ name, amount, category })
+        createTransaction({ name, amount, category, type })
             .then(() => {
                 alert('Transaction Created')
                 renderTransaction();
             })
     });
-    
+
+    // handle save transaction
+    const transactionSaveSubmit = document.getElementById('transaction-save-submit');
+    transactionSaveSubmit.addEventListener('click', () => {
+        const id = document.getElementById('transaction-id-input').value;
+        const name = document.getElementById('transaction-name-input').value;
+        const amount = document.getElementById('transaction-amount-input').value;
+        const type = document.getElementById('type_finance-input').value;
+        const category = document.getElementById('category-list').value;
+        console.log({ name, amount, category, type, id })
+        updateTransaction({ name, amount, category, type, id })
+            .then(() => {
+                alert('Transaction Updated')
+                renderTransaction();
+            })
+    });
 
 })()
 

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
 </head>
 <body>
+    <h1 class="text-center"> Expense Chart </h1>
     <div class="chart-container container d-flex justify-content-center">
         <canvas id="myChart"></canvas>
     </div>
@@ -19,7 +20,16 @@
         <input  class="form-control mt-2" type="nukber"  id="transaction-amount-input" placeholder="Amount">
         <select name="category" id="category-list" class="form-select mt-2">
         </select>
+        <select name="type_finance" id="type_finance-input" class="form-select mt-2">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+        </select>
         <button class ="btn btn-primary mt-2" id="transaction-submit">Submit</button>
+
+        <div class="input-group mt-3">
+          <input class="form-control" type="text"  id="transaction-id-input" placeholder="ID transaction">
+          <button class ="btn btn-primary" id="transaction-save-submit">Save</button>
+        </div>
     </div>
 
     <div class="list-container container mt-5 border">
@@ -30,6 +40,8 @@
                 <th scope="col">Name</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Category</th>
+                <th scope="col">Type</th>
+                <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody id="transaction-list">
