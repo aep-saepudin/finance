@@ -143,7 +143,10 @@ async function renderTransaction() {
         const class_value = transaction.amount < 0 ? 'text-danger' : 'text-success'
         row.classList.add(class_value);
         row.innerHTML = `
-            <th scope="row">${transaction._id} <button onclick="deleteRow('${transaction._id}')"> Delete </button></th>
+            <th scope="row">${transaction._id} 
+                <button onclick="deleteRow('${transaction._id}')"> Delete </button>
+                <button onclick="updateRow('${transaction._id}')"> Update </button>
+            </th>
             <td>${transaction.name}</td>
             <td>${transaction.amount}</td>
             <td>${transaction.category}</td>
@@ -164,6 +167,17 @@ function deleteRow(id) {
             alert('Transaction Deleted')
             renderTransaction();
         })
+}
+
+function updateRow(id) {
+    const transaction = db.get(id)
+    transaction.then((doc) => {
+        document.getElementById('transaction-id-input').value = doc._id
+        document.getElementById('transaction-name-input').value = doc.name
+        document.getElementById('transaction-amount-input').value = doc.amount
+        document.getElementById('category-list').value = doc.category
+        document.getElementById('type_finance-input').value = doc.type_finance
+    })
 }
 
 // render chart
@@ -278,6 +292,15 @@ async function renderTotalAmount() {
                 alert('Transaction Updated')
                 renderTransaction();
             })
+    });
+
+    // handle clear transaction
+    const transactionClearSubmit = document.getElementById('transaction-clear-submit');
+    transactionClearSubmit.addEventListener('click', () => {
+        document.getElementById('transaction-name-input').value = '';
+        document.getElementById('transaction-amount-input').value = '';
+        document.getElementById('category-list').value = '';
+        document.getElementById('type_finance-input').value = '';
     });
 
 })()
